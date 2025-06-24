@@ -1,4 +1,3 @@
-````md
 # Citation Pipeline – *From APA in-text citations to web-ready superscripts*
 
 A tiny three-part tool-chain that turns the usual “(Author, 2025)” calls in your draft into clean numeric superscripts, ready for print **and** Google Slides.
