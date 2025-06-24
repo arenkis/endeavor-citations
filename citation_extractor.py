@@ -20,6 +20,29 @@ import markdown
 # original Unicode superscript digits for the Markdown file
 _super_map = str.maketrans("0123456789", "⁰¹²³⁴⁵⁶⁷⁸⁹")
 
+HTML_WRAPPER = """<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Citations</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    body {{
+      font-family: 'Inter', sans-serif;
+      font-size: 8pt;
+      line-height: 1.25;
+      margin: 0;
+      padding: 1em;
+    }}
+    sup strong {{ font-weight: 700; }}
+    p {{ margin: 0 0 4px 0; }}
+  </style>
+</head>
+<body>
+{body}
+</body>
+</html>"""
+
 def to_superscript(nums):
     """Unicode superscript digits (commas stay normal)."""
     return ','.join(''.join(str(n).translate(_super_map)) for n in nums)
@@ -139,7 +162,7 @@ def extract_citations_and_merge_zotero(text_file, zotero_csv, output_md):
             url   = item.get('Url', '')
             url_part = f" <{url}>" if url else ""
             line_md  = f"{sup_md} {apa} ({yr}). *{title}*.{url_part}"
-            line_htm = f"{sup_ht} {apa} ({yr}). <em>{title}</em>.{url_part}"
+            line_htm = f"<p>{sup_ht} {apa} ({yr}). <em>{title}</em>.{url_part}</p>"
             outputs_md.append(line_md)
             outputs_html.append(line_htm)
         else:                 # ---- multiple matches: emit per appearance
@@ -154,7 +177,7 @@ def extract_citations_and_merge_zotero(text_file, zotero_csv, output_md):
                 url   = item.get('Url', '')
                 url_part = f" <{url}>" if url else ""
                 line_md  = f"{sup_md} {apa} ({yr}). *{title}*.{url_part}"
-                line_htm = f"{sup_ht} {apa} ({yr}). <em>{title}</em>.{url_part}"
+                line_htm = f"<p>{sup_ht} {apa} ({yr}). <em>{title}</em>.{url_part}</p>"
                 outputs_md.append(line_md)
                 outputs_html.append(line_htm)
 
@@ -163,14 +186,15 @@ def extract_citations_and_merge_zotero(text_file, zotero_csv, output_md):
     Path(output_md).write_text(md_text, encoding="utf-8")
 
     # ---------- write HTML (paragraph per citation) ----------------------
-    html_body = "\n\n".join(outputs_html)          # blank line ⇒ <p>…</p>
+    html_body = "\n".join(outputs_html)  # keep each <p> on a separate line
+
     html_file = Path(output_md).with_suffix(".html")
-    html_text = markdown.markdown(
-        html_body,
-        extensions=["fenced_code", "tables"],
-        output_format="html5",
-    )
-    html_file.write_text(html_text, encoding="utf-8")
+
+    # DO NOT use markdown.markdown – we're injecting raw HTML
+    full_html = HTML_WRAPPER.format(body=html_body)
+    html_file.write_text(full_html, encoding="utf-8")
+
+
 
     print("✓ Markdown written →", output_md)
     print("✓ HTML written     →", html_file)
