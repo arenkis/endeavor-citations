@@ -76,7 +76,10 @@ def extract_citations_and_merge_zotero(text_file, zotero_csv, output_md):
     in_text_citations = []
     for grp in raw_groups:
         for part in re.split(r';\s*', grp):
-            m = re.match(r'(.+?),\s*(\d{4})$', part.strip())
+            # (Author, Year) or (Author et al., Year) or (Author & Author, Year) i.e., must have comma
+            # m = re.match(r'(.+?),\s*(\d{4})$', part.strip())
+            # (Author Year) or (Author et al. Year) or (Author & Author Year) i.e., no comma
+            m = re.match(r'(.+?)(?:,\s*|\s+)(\d{4})$', part.strip())
             if m:
                 in_text_citations.append((m.group(1).strip(), m.group(2)))
 
