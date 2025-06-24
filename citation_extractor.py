@@ -160,9 +160,9 @@ def extract_citations_and_merge_zotero(text_file, zotero_csv, output_md):
             apa   = format_apa_authors(item['Author'])
             title = item['Title']
             url   = item.get('Url', '')
-            url_part = f" <{url}>" if url else ""
+            url_part = f" {url}" if url else ""
             line_md  = f"{sup_md} {apa} ({yr}). *{title}*.{url_part}"
-            line_htm = f"<p>{sup_ht} {apa} ({yr}). <em>{title}</em>.{url_part}</p>"
+            line_htm = f"<p>{sup_ht} {apa} ({yr}). <em>{title}</em>.<a href='{url_part}'>{url_part}</a></p>"
             outputs_md.append(line_md)
             outputs_html.append(line_htm)
         else:                 # ---- multiple matches: emit per appearance
@@ -175,9 +175,9 @@ def extract_citations_and_merge_zotero(text_file, zotero_csv, output_md):
                 apa   = format_apa_authors(item['Author'])
                 title = item['Title']
                 url   = item.get('Url', '')
-                url_part = f" <{url}>" if url else ""
+                url_part = f" {url}" if url else ""
                 line_md  = f"{sup_md} {apa} ({yr}). *{title}*.{url_part}"
-                line_htm = f"<p>{sup_ht} {apa} ({yr}). <em>{title}</em>.{url_part}</p>"
+                line_htm = f"<p>{sup_ht} {apa} ({yr}). <em>{title}</em>.<a href='{url_part}'>{url_part}</a></p>"
                 outputs_md.append(line_md)
                 outputs_html.append(line_htm)
 
