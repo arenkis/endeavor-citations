@@ -19,7 +19,7 @@ function replaceCitationsWithSuperscripts() {
 
   /* basic patterns */
   const PAREN_PATTERN  = "\\((?:[^)]+)\\)";                // literal "( … )"
-  const AUTHOR_YEAR_RE = /\b[\wÀ-ÖØ-öø-ÿ'`-]+(?: et al\.)?,\s*[12]\d{3}\b/;
+  const AUTHOR_YEAR_RE = /[\wÀ-ÖØ-öø-ÿ'’&.\-–0-9]+(?: et al\.)?,\s*[12]\d{3}/;
   const PUNCT_RE       = /[.,!?]/;                         // period, comma, …
 
   const pres = SlidesApp.getActivePresentation();
