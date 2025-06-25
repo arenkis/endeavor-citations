@@ -29,7 +29,7 @@ A tiny three-part tool-chain that turns the usual “(Author, 2025)” calls in 
 <details>
 <summary><strong>2.0  No-install route – Google Colab (recommended for occasional users)</strong></summary>
 
-1. **Open the notebook** → <https://colab.research.google.com/github/endeavor-citations/citation_extractor.ipynb>  
+1. **Open the notebook** → <https://github.com/arenkis/endeavor-citations/citation_extractor.ipynb>  
    (or click the “Open in Colab” badge in this repo).
 
 2. Click **Runtime → Run all**.  
