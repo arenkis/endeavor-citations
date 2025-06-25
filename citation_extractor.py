@@ -112,14 +112,26 @@ def extract_citations_and_merge_zotero(text_file, zotero_csv, output_md):
         cites_by_pair.setdefault((auth, yr), []).append(idx)
 
     # ---------- load Zotero CSV ------------------------------------------
+
+    # ---------- load Zotero CSV ------------------------------------------
     z = pd.read_csv(zotero_csv, encoding="utf-8")
     z['NormAuthor'] = z['Author'].apply(normalize_author)
+    z['NormEditor']       = z['Editor'].apply(normalize_author)
+    z['NormInstitution']  = z['Institution'].apply(normalize_name)
+    z['NormWebsiteTitle'] = z['Website Title'].apply(normalize_name)
+    z['NormPublication']  = z['Publication'].apply(normalize_name)
+    z['NormBlogTitle']    = z['Blog Title'].apply(normalize_name)
     z['Year']       = z['Publication Year'].astype(str).str.extract(r'(\d{4})')
     z['DateAdded']  = pd.to_datetime(z['Date Added'], errors='coerce')
 
+    # ─── new lookup across potential author fields ───
     lookup = {}
     for _, row in z.iterrows():
-        lookup.setdefault((row['NormAuthor'], row['Year']), []).append(row)
+        for field in ['NormAuthor', 'NormEditor', 'NormInstitution', 'NormWebsiteTitle', 'NormPublication', 'NormBlogTitle']:
+            key = (row[field], row['Year'])
+            if key[0]:  # only index non-empty values
+                lookup.setdefault(key, []).append(row)
+    # then sort each list by DateAdded as before
     for key in lookup:
         lookup[key].sort(key=lambda r: r['DateAdded'])
 
